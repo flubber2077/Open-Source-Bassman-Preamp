@@ -43,18 +43,6 @@ void Saturation::processBlock(float* samplePointer, int numSamples, int channel)
         }
 }
 
-void Saturation::processBlock(juce::AudioBuffer< float >& buffer)
-{
-    for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
-    {
-        float* bufferPointer = buffer.getWritePointer(channel);
-        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-        {
-            processSample(bufferPointer[sample], channel);
-        }
-    }
-}
-
 float Saturation::clip(float sample)
 {
     //must match antiderivativeClip

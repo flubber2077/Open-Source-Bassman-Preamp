@@ -168,10 +168,10 @@ void PanOFlexAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
 
         miller1.processBlock(channelData, numSamples, channel);
         tube1.processBlock(channelData, numSamples, channel);
-        rcfilter1.processBlock();
-        BrightVolume.processBlock();
+        rcfilter1.processBlock(channelData, numSamples, channel);
+        volumeControl.processBlock(channelData, numSamples, channel);
         miller2.processBlock(channelData, numSamples, channel);
-        tube2.processBlock();
+        tube2.processBlock(channelData, numSamples, channel);
     }
 }
 
