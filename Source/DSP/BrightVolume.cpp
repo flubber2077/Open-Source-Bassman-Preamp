@@ -9,3 +9,19 @@
 */
 
 #include "BrightVolume.h"
+
+
+void BrightVolume::processSample(float& sample, int channel)
+{
+    float input = (sample - state[channel]) * cutoffCoeff;
+    float lowPass = input + state[channel];
+    state[channel] = lowPass + input;
+    float highPass = sample - lowPass;
+    sample = mainGain * lowPass + highGain * highPass;
+}
+
+void BrightVolume::updateGain(float gain)
+{
+    mainGain = gain / (1.0f + outputImpedanceRatio);
+    highGain = gain / (outputImpedanceRatio * gain);
+}

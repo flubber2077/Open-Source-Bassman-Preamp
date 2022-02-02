@@ -9,3 +9,10 @@
 */
 
 #pragma once
+#include "Filter.h"
+
+class OnePoleHighPass: public Filter
+{
+public:
+    void processSample(float& sample, int channel);
+};

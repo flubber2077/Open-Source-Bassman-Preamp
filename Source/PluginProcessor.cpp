@@ -93,8 +93,19 @@ void PanOFlexAudioProcessor::changeProgramName (int index, const juce::String& n
 //==============================================================================
 void PanOFlexAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    int numChannels = getNumInputChannels();
+    miller1.prepareToPlay(numChannels, sampleRate);
+    tube1.prepareToPlay(numChannels);
+    rcfilter1.prepareToPlay(numChannels, sampleRate);
+    volumeControl.prepareToPlay(numChannels, sampleRate);
+    miller2.prepareToPlay(numChannels, sampleRate);
+    tube2.prepareToPlay(numChannels);
+
+    //placeholder cutoff values but ballpark accurate/workable
+    miller1.updateCutoff(22000.0f);
+    rcfilter1.updateCutoff(20.0f);
+    volumeControl.updateCutoff(4000.0f);
+    miller2.updateCutoff(22000.0f);
 }
 
 void PanOFlexAudioProcessor::releaseResources()
@@ -153,8 +164,14 @@ void PanOFlexAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         auto* channelData = buffer.getWritePointer (channel);
+        int numSamples = buffer.getNumSamples();
 
-        // ..do something to the data...
+        miller1.processBlock(channelData, numSamples, channel);
+        tube1.processBlock(channelData, numSamples, channel);
+        rcfilter1.processBlock();
+        BrightVolume.processBlock();
+        miller2.processBlock(channelData, numSamples, channel);
+        tube2.processBlock();
     }
 }
 

@@ -9,3 +9,11 @@
 */
 
 #include "DCBlock.h"
+
+void OnePoleHighPass::processSample(float& sample, int channel)
+{
+    float input = (sample - state[channel]) * cutoffCoeff;
+    float lowpass = input + state[channel];
+    state[channel] = lowpass + input;
+    sample -= lowpass;
+}
