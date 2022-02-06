@@ -19,7 +19,7 @@ PanOFlexAudioProcessor::PanOFlexAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+     ), apvts(*this, nullptr, "Parameters", createParams())
 #endif
 {
 }
@@ -103,11 +103,11 @@ void PanOFlexAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     rcfilter2.prepareToPlay(numChannels, sampleRate);
 
     //placeholder cutoff values but ballpark accurate/workable
-    miller1.updateCutoff(25000.0f);
+    miller1.updateCutoff(22000.0f);
     rcfilter1.updateCutoff(20.0f);
     volumeControl.updateCutoff(4000.0f);
     volumeControl.updateGain(0.5f);
-    miller2.updateCutoff(25000.0f);
+    miller2.updateCutoff(22000.0f);
     rcfilter2.updateCutoff(20.0f);
 }
 
@@ -145,6 +145,9 @@ bool PanOFlexAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts)
 
 void PanOFlexAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
+    auto& volume = *apvts.getRawParameterValue("VOLUME");
+    volumeControl.updateGain(volume);
+
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
@@ -158,12 +161,6 @@ void PanOFlexAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
     int numSamples = buffer.getNumSamples();
 
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
@@ -174,7 +171,7 @@ void PanOFlexAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
 
         for (int sample = 0; sample < numSamples; sample++)
         {
-            channelData[sample] *= 2.0f;
+            channelData[sample] *= 10.0f;
         }
         
         tube1.processBlock(channelData, numSamples, channel);
@@ -184,12 +181,16 @@ void PanOFlexAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
 
         for (int sample = 0; sample < numSamples; sample++)
         {
-            channelData[sample] *= 2.0f;
+            channelData[sample] *= 10.0f;
         }
 
         tube2.processBlock(channelData, numSamples, channel);
         rcfilter2.processBlock(channelData, numSamples, channel);
         
+        for (int sample = 0; sample < numSamples; sample++)
+        {
+            channelData[sample] *= 0.4f;
+        }
     }
 }
 
@@ -223,4 +224,12 @@ void PanOFlexAudioProcessor::setStateInformation (const void* data, int sizeInBy
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new PanOFlexAudioProcessor();
+}
+
+juce::AudioProcessorValueTreeState::ParameterLayout PanOFlexAudioProcessor::createParams()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("VOLUME", "Volume", juce::NormalisableRange<float> { 0.001f, 1.0f, 0.001f, 0.3f }, 0.1f));
+    return { params.begin(), params.end() };
 }

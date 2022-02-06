@@ -57,7 +57,10 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    juce::AudioProcessorValueTreeState apvts;
 private:
+    juce::AudioProcessorValueTreeState::ParameterLayout createParams();
+
     Filter miller1;
     Filter miller2;
     OnePoleHighPass rcfilter1;
@@ -65,7 +68,6 @@ private:
     Saturation tube1;
     Saturation tube2;
     BrightVolume volumeControl;
-
 
 
     //==============================================================================

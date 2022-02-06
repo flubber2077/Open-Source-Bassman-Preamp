@@ -11,11 +11,13 @@
 
 //==============================================================================
 PanOFlexAudioProcessorEditor::PanOFlexAudioProcessorEditor (PanOFlexAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+    : AudioProcessorEditor (&p), audioProcessor (p), controls(audioProcessor.apvts)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (400, 300);
+
+    addAndMakeVisible(controls);
 }
 
 PanOFlexAudioProcessorEditor::~PanOFlexAudioProcessorEditor()
@@ -35,6 +37,7 @@ void PanOFlexAudioProcessorEditor::paint (juce::Graphics& g)
 
 void PanOFlexAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
+    int width = getWidth();
+    int height = getHeight();
+    controls.setBounds(0, 30, width, height);
 }

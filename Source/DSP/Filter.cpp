@@ -53,6 +53,11 @@ void Filter::updateSampleRate(float sampleRate)
 
 void Filter::updateCutoff(float frequency)
 {
+    float nyquistFreq = 1 / (sampleTime *  2.0f);
+    //limits cutoff to slightly below nyqyuist frequency
+    cutoffFrequency = std::min(frequency, nyquistFreq - 50.0f);
+    updateCutoff();
+
     cutoffFrequency = frequency;
     updateCutoff();
     void updateTimeConstant(float seconds);
