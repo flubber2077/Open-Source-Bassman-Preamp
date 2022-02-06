@@ -100,12 +100,15 @@ void PanOFlexAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     volumeControl.prepareToPlay(numChannels, sampleRate);
     miller2.prepareToPlay(numChannels, sampleRate);
     tube2.prepareToPlay(numChannels);
+    rcfilter2.prepareToPlay(numChannels, sampleRate);
 
     //placeholder cutoff values but ballpark accurate/workable
-    miller1.updateCutoff(22000.0f);
+    miller1.updateCutoff(25000.0f);
     rcfilter1.updateCutoff(20.0f);
     volumeControl.updateCutoff(4000.0f);
-    miller2.updateCutoff(22000.0f);
+    volumeControl.updateGain(0.5f);
+    miller2.updateCutoff(25000.0f);
+    rcfilter2.updateCutoff(20.0f);
 }
 
 void PanOFlexAudioProcessor::releaseResources()
@@ -161,17 +164,32 @@ void PanOFlexAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     // the samples and the outer loop is handling the channels.
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
+    int numSamples = buffer.getNumSamples();
+
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         auto* channelData = buffer.getWritePointer (channel);
-        int numSamples = buffer.getNumSamples();
 
         miller1.processBlock(channelData, numSamples, channel);
+
+        for (int sample = 0; sample < numSamples; sample++)
+        {
+            channelData[sample] *= 2.0f;
+        }
+        
         tube1.processBlock(channelData, numSamples, channel);
         rcfilter1.processBlock(channelData, numSamples, channel);
         volumeControl.processBlock(channelData, numSamples, channel);
         miller2.processBlock(channelData, numSamples, channel);
+
+        for (int sample = 0; sample < numSamples; sample++)
+        {
+            channelData[sample] *= 2.0f;
+        }
+
         tube2.processBlock(channelData, numSamples, channel);
+        rcfilter2.processBlock(channelData, numSamples, channel);
+        
     }
 }
 

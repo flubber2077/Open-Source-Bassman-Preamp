@@ -19,7 +19,7 @@ public:
     void reset();
     void processSample(float& sample);
     float advanceFilter(float sample);
-    void processSample(float& sample, int channel);
+    virtual void processSample(float& sample, int channel);
     void updateSampleRate(float sampleRate);
     void updateCutoff(float frequency);
     void updateTimeConstant(float seconds);

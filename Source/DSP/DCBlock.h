@@ -14,5 +14,5 @@
 class OnePoleHighPass: public Filter
 {
 public:
-    void processSample(float& sample, int channel);
+    void processSample(float& sample, int channel) override;
 };

@@ -28,7 +28,7 @@
   <EXPORTFORMATS>
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="Pan-O-Flex"/>
+        <CONFIGURATION name="Debug" targetName="Pan-O-Flex"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="Pan-O-Flex"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

@@ -23,5 +23,5 @@ void BrightVolume::processSample(float& sample, int channel)
 void BrightVolume::updateGain(float gain)
 {
     mainGain = gain / (1.0f + outputImpedanceRatio);
-    highGain = gain / (outputImpedanceRatio * gain);
+    highGain = gain / (gain + outputImpedanceRatio);
 }

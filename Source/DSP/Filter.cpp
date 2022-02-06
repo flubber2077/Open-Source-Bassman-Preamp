@@ -77,7 +77,7 @@ void Filter::updateCutoff()
     //i am praying that compiling takes care of this. There is a lot of cleanup that could happen here
     //but then the variables would have a lot less meaning
     float wd = twoPi * cutoffFrequency;
-    float prewarpCutoff = (2.0f / sampleTime) * tan(wd * sampleTime / 2.0f);
+    float prewarpCutoff = (2.0f / sampleTime) * tanf(wd * sampleTime / 2.0f);
     float g = prewarpCutoff * sampleTime / 2.0f;
     cutoffCoeff = g / (1.0f + g);
 }
