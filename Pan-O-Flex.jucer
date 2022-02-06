@@ -3,6 +3,10 @@
 <JUCERPROJECT id="exGjf5" name="Pan-O-Flex" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="dkwySe" name="Pan-O-Flex">
+    <GROUP id="{E9ED832B-5C54-1C4E-BD63-2A984270A10C}" name="GUI">
+      <FILE id="XVZBPX" name="Controls.cpp" compile="1" resource="0" file="Source/GUI/Controls.cpp"/>
+      <FILE id="gh28wT" name="Controls.h" compile="0" resource="0" file="Source/GUI/Controls.h"/>
+    </GROUP>
     <GROUP id="{2C0F0719-3183-625F-7A1E-E20A90353ED8}" name="DSP">
       <FILE id="pRlybL" name="BrightVolume.cpp" compile="1" resource="0"
             file="Source/DSP/BrightVolume.cpp"/>
