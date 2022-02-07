@@ -143,13 +143,13 @@ bool PanOFlexAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts)
 }
 #endif
 
-void PanOFlexAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void PanOFlexAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     auto& volume = *apvts.getRawParameterValue("VOLUME");
     volumeControl.updateGain(volume);
 
     juce::ScopedNoDenormals noDenormals;
-    auto totalNumInputChannels  = getTotalNumInputChannels();
+    auto totalNumInputChannels = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
     // In case we have more outputs than inputs, this code clears any output
@@ -159,39 +159,35 @@ void PanOFlexAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     // when they first compile a plugin, but obviously you don't need to keep
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
+        buffer.clear(i, 0, buffer.getNumSamples());
 
     int numSamples = buffer.getNumSamples();
 
+    //this gain amount should be varied from simulation to better accept a more standard signal level. maybe a pad input at the beginning?jl
+    buffer.applyGain(2.0f);
+
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
-        auto* channelData = buffer.getWritePointer (channel);
+        auto* channelData = buffer.getWritePointer(channel);
 
         miller1.processBlock(channelData, numSamples, channel);
-
-        for (int sample = 0; sample < numSamples; sample++)
-        {
-            channelData[sample] *= 10.0f;
-        }
-        
         tube1.processBlock(channelData, numSamples, channel);
         rcfilter1.processBlock(channelData, numSamples, channel);
         volumeControl.processBlock(channelData, numSamples, channel);
         miller2.processBlock(channelData, numSamples, channel);
-
-        for (int sample = 0; sample < numSamples; sample++)
-        {
-            channelData[sample] *= 10.0f;
-        }
-
+    }
+    buffer.applyGain(40.0f);
+    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    {
+        auto* channelData = buffer.getWritePointer(channel);
         tube2.processBlock(channelData, numSamples, channel);
         rcfilter2.processBlock(channelData, numSamples, channel);
-        
-        for (int sample = 0; sample < numSamples; sample++)
-        {
-            channelData[sample] *= 0.4f;
-        }
     }
+    //this should be a dedicated master volume
+    buffer.applyGain(0.5f);
+
+    //gain control compensation. at 1/5 its very slight and at 1/4 it sounds even
+    buffer.applyGain(powf(volume, -1.0f / 5.0f));
 }
 
 //==============================================================================
