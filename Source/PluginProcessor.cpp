@@ -146,7 +146,11 @@ bool PanOFlexAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts)
 void PanOFlexAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     auto& volume = *apvts.getRawParameterValue("VOLUME");
+    auto& brightSwitch = *apvts.getRawParameterValue("BRIGHTSWITCH");
+    auto& master = *apvts.getRawParameterValue("MASTER");
+
     volumeControl.updateGain(volume);
+    volumeControl.updateSwitch(brightSwitch);
 
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels = getTotalNumInputChannels();
@@ -183,8 +187,8 @@ void PanOFlexAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce
         tube2.processBlock(channelData, numSamples, channel);
         rcfilter2.processBlock(channelData, numSamples, channel);
     }
-    //this should be a dedicated master volume
-    buffer.applyGain(0.5f);
+    
+    buffer.applyGain(master);
 
     //gain control compensation. at 1/5 its very slight and at 1/4 it sounds even
     buffer.applyGain(powf(volume, -1.0f / 5.0f));
@@ -226,6 +230,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout PanOFlexAudioProcessor::crea
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
 
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("VOLUME", "Volume", juce::NormalisableRange<float> { 0.001f, 1.0f, 0.001f, 0.3f }, 0.1f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("VOLUME", "Volume", juce::NormalisableRange<float> { 0.001f, 1.0f, 0.000001f, 0.3f }, 0.1f));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("BRIGHTSWITCH", "Bright Switch", false));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("MASTER", "Master", juce::NormalisableRange<float> { 0.001f, 1.0f, 0.000001f, 0.3f }, 0.5f));
     return { params.begin(), params.end() };
 }

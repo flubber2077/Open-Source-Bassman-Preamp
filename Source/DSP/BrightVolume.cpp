@@ -20,8 +20,28 @@ void BrightVolume::processSample(float& sample, int channel)
     sample = mainGain * lowPass + highGain * highPass;
 }
 
+void BrightVolume::processBlock(float* samplePointer, int numSamples, int channel)
+{
+    if (brightSwitch == true) {
+        for (int sample = 0; sample < numSamples; ++sample)
+        {
+            processSample(samplePointer[sample], channel);
+        }
+    } else {
+        for (int sample = 0; sample < numSamples; sample++)
+        {
+            samplePointer[sample] *= mainGain;
+        }
+    }
+}
+
 void BrightVolume::updateGain(float gain)
 {
     mainGain = gain / (1.0f + outputImpedanceRatio);
     highGain = gain / (gain + outputImpedanceRatio);
+}
+
+void BrightVolume::updateSwitch(bool toggle)
+{
+    brightSwitch = toggle;
 }

@@ -28,10 +28,16 @@ private:
     void setSliderParams(juce::Slider& slider);
 
     juce::Slider volumeSlider;
+    juce::Slider masterSlider;
+
+    juce::ToggleButton brightButton;
 
     using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
     
     std::unique_ptr<SliderAttachment> volumeAttachment;
+    std::unique_ptr<SliderAttachment> masterAttachment;
+
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> brightAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControlsComponent)
 };
