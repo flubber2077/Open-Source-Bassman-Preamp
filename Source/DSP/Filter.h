@@ -23,7 +23,7 @@ public:
     void updateSampleRate(float sampleRate);
     void updateCutoff(float frequency);
     void updateTimeConstant(float seconds);
-    void processBlock(float* sample, int numSamples, int channel);
+    virtual void processBlock(float* sample, int numSamples, int channel);
 
 protected:
     const float twoPi = 6.2831853f;

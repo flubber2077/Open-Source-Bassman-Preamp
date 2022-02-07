@@ -18,8 +18,11 @@ class BrightVolume : public Filter
 public:
     void processSample(float& sample, int channel) override;
     void updateGain(float gain);
+    void processBlock(float* samplePointer, int numSamples, int channel) override;
+    void updateSwitch(bool toggle);
 private:
+    bool brightSwitch;
     float mainGain;
     float highGain;
-    float outputImpedanceRatio = 0.1f; //ratio of output impedance to volume control impedance
+    const float outputImpedanceRatio = 0.15f; //ratio of output impedance to volume control impedance
 };
