@@ -68,6 +68,8 @@ private:
     Saturation tube1;
     Saturation tube2;
     BrightVolume volumeControl;
+    juce::Reverb reverb;
+    juce::Reverb::Parameters reverbParams;
 
 
     //==============================================================================

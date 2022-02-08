@@ -101,6 +101,9 @@ void PanOFlexAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     miller2.prepareToPlay(numChannels, sampleRate);
     tube2.prepareToPlay(numChannels);
     rcfilter2.prepareToPlay(numChannels, sampleRate);
+    reverb.setSampleRate(sampleRate);
+    reverbParams.dryLevel = 1.0f;
+    reverbParams.roomSize = 0.3f;
 
     //placeholder cutoff values but ballpark accurate/workable
     miller1.updateCutoff(22000.0f);
@@ -148,7 +151,10 @@ void PanOFlexAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce
     auto& volume = *apvts.getRawParameterValue("VOLUME");
     auto& brightSwitch = *apvts.getRawParameterValue("BRIGHTSWITCH");
     auto& master = *apvts.getRawParameterValue("MASTER");
+    auto& reverbAmt = *apvts.getRawParameterValue("REVERB");
 
+    reverbParams.wetLevel = reverbAmt;
+    reverb.setParameters(reverbParams);
     volumeControl.updateGain(volume);
     volumeControl.updateSwitch(brightSwitch);
 
@@ -192,6 +198,10 @@ void PanOFlexAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce
 
     //gain control compensation. at 1/5 its very slight and at 1/4 it sounds even
     buffer.applyGain(powf(volume, -1.0f / 5.0f));
+
+    auto* leftData = buffer.getWritePointer(0);
+    auto* rightData = buffer.getWritePointer(1);
+    reverb.processStereo(leftData, rightData, numSamples);
 }
 
 //==============================================================================
@@ -232,6 +242,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout PanOFlexAudioProcessor::crea
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>("VOLUME", "Volume", juce::NormalisableRange<float> { 0.001f, 1.0f, 0.000001f, 0.3f }, 0.1f));
     params.push_back(std::make_unique<juce::AudioParameterBool>("BRIGHTSWITCH", "Bright Switch", false));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("MASTER", "Master", juce::NormalisableRange<float> { 0.001f, 1.0f, 0.000001f, 0.3f }, 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("MASTER", "Master", juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.3f }, 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("REVERB", "Reverb", juce::NormalisableRange<float> { 0.0f, 0.3f, 0.000001f, 0.6f }, 0.1f));
     return { params.begin(), params.end() };
 }
