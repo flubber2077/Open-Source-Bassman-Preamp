@@ -29,6 +29,7 @@ private:
 
     juce::Slider volumeSlider;
     juce::Slider masterSlider;
+    juce::Slider reverbSlider;
 
     juce::ToggleButton brightButton;
 
@@ -36,6 +37,7 @@ private:
     
     std::unique_ptr<SliderAttachment> volumeAttachment;
     std::unique_ptr<SliderAttachment> masterAttachment;
+    std::unique_ptr<SliderAttachment> reverbAttachment;
 
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> brightAttachment;
 
