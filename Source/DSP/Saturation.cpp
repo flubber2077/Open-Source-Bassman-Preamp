@@ -46,21 +46,16 @@ void Saturation::processBlock(float* samplePointer, int numSamples, int channel)
 float Saturation::clip(float sample)
 {
     //must match antiderivativeClip
-    return tanh(sample);
+    return sample / sqrtf(sample * sample + 1.0f);
 }
 
 float Saturation::antiderivativeClip(float sample)
 {
     //must be the antiderivative of clip, preferably such that F(0) = 0
-    return (logf(coshf(sample))); //antiderivative of tan(x)
+    return sqrtf(sample * sample + 1.0f) - 1.0f;
 }
 
 //alternative clipping functions
-//tan(x)
-//sample = sample/(1+fabsf(sample));
-/*if (fabsf(sample) < 1.0f)
- {
- sample = 0.5f *(3.0f * sample - sample * sample * sample);
- } else {
- sample = copysignf(1.0f, sample);
- }*/
+
+//return tanh(sample);
+//return (logf(coshf(sample))); //antiderivative of tan(x)
