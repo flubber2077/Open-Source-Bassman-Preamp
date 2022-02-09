@@ -82,10 +82,10 @@ private:
     juce::Reverb reverb;
     juce::Reverb::Parameters reverbParams;
 
-    float mVolume;
+    float mVolume = 0.1f;
     bool mBright;
-    float mMaster;
-    float mReverb;
+    float mMaster = 0.1f;
+    float mReverb = 0.1f;
 
 
     //==============================================================================
