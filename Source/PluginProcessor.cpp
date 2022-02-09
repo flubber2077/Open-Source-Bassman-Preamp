@@ -9,6 +9,12 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+juce::String PanOFlexAudioProcessor::paramVolume("Volume");
+juce::String PanOFlexAudioProcessor::paramBright("Bright");
+juce::String PanOFlexAudioProcessor::paramMaster("Master");
+juce::String PanOFlexAudioProcessor::paramReverb("Reverb");
+
+
 //==============================================================================
 PanOFlexAudioProcessor::PanOFlexAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -22,6 +28,10 @@ PanOFlexAudioProcessor::PanOFlexAudioProcessor()
      ), apvts(*this, nullptr, "Parameters", createParams())
 #endif
 {
+    apvts.addParameterListener(paramVolume, this);
+    apvts.addParameterListener(paramBright, this);
+    apvts.addParameterListener(paramMaster, this);
+    apvts.addParameterListener(paramReverb, this);
 }
 
 PanOFlexAudioProcessor::~PanOFlexAudioProcessor()
@@ -120,6 +130,22 @@ void PanOFlexAudioProcessor::releaseResources()
     // spare memory, etc.
 }
 
+void PanOFlexAudioProcessor::parameterChanged(const juce::String& parameterID, float newValue)
+{
+    if (parameterID == paramVolume) {
+        mVolume = newValue;
+    }
+    else if (parameterID == paramBright) {
+        mBright = newValue;
+    }
+    else if (parameterID == paramMaster) {
+        mMaster = newValue;
+    }
+    else if (parameterID == paramReverb) {
+        mReverb = newValue;
+    }
+}
+
 #ifndef JucePlugin_PreferredChannelConfigurations
 bool PanOFlexAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
@@ -204,6 +230,11 @@ void PanOFlexAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce
     reverb.processStereo(leftData, rightData, numSamples);
 }
 
+juce::AudioProcessorValueTreeState& PanOFlexAudioProcessor::getValueTreeState()
+{
+    return apvts;
+}
+
 //==============================================================================
 bool PanOFlexAudioProcessor::hasEditor() const
 {
@@ -240,9 +271,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout PanOFlexAudioProcessor::crea
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
 
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("VOLUME", "Volume", juce::NormalisableRange<float> { 0.001f, 1.0f, 0.000001f, 0.3f }, 0.1f));
-    params.push_back(std::make_unique<juce::AudioParameterBool>("BRIGHTSWITCH", "Bright Switch", false));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("MASTER", "Master", juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.3f }, 0.5f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("REVERB", "Reverb", juce::NormalisableRange<float> { 0.0f, 0.3f, 0.000001f, 0.6f }, 0.1f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(paramVolume, TRANS ("Volume"), juce::NormalisableRange<float> { 0.001f, 1.0f, 0.000001f, 0.3f }, 0.1f));
+    params.push_back(std::make_unique<juce::AudioParameterBool>(paramBright, TRANS ("Bright Switch"), false));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(paramMaster, TRANS ("Master"), juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.3f }, 0.1f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(paramReverb, TRANS ("Reverb"), juce::NormalisableRange<float> { 0.0f, 0.3f, 0.000001f, 0.6f }, 0.1f));
     return { params.begin(), params.end() };
 }

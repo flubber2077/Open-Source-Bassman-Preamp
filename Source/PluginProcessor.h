@@ -17,7 +17,7 @@
 //==============================================================================
 /**
 */
-class PanOFlexAudioProcessor  : public juce::AudioProcessor
+class PanOFlexAudioProcessor  : public juce::AudioProcessor, public juce::AudioProcessorValueTreeState::Listener
 {
 public:
     //==============================================================================
@@ -27,6 +27,8 @@ public:
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
+
+    void parameterChanged(const juce::String& parameterID, float newValue) override;
 
    #ifndef JucePlugin_PreferredChannelConfigurations
     bool isBusesLayoutSupported (const BusesLayout& layouts) const override;
@@ -57,8 +59,17 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    juce::AudioProcessorValueTreeState& getValueTreeState();
+
+    static juce::String paramVolume;
+    static juce::String paramBright;
+    static juce::String paramMaster;
+    static juce::String paramReverb;
+
     juce::AudioProcessorValueTreeState apvts;
+
 private:
+
     juce::AudioProcessorValueTreeState::ParameterLayout createParams();
 
     Filter miller1;
@@ -70,6 +81,11 @@ private:
     BrightVolume volumeControl;
     juce::Reverb reverb;
     juce::Reverb::Parameters reverbParams;
+
+    float mVolume;
+    bool mBright;
+    float mMaster;
+    float mReverb;
 
 
     //==============================================================================
