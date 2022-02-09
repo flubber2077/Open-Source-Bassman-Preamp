@@ -15,7 +15,7 @@ PanOFlexAudioProcessorEditor::PanOFlexAudioProcessorEditor (PanOFlexAudioProcess
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (400, 300);
+    setSize (400, 250);
 
     setSliderParams(volumeSlider);
     setSliderParams(masterSlider);
@@ -35,23 +35,34 @@ void PanOFlexAudioProcessorEditor::paint (juce::Graphics& g)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
     g.setColour (juce::Colours::white);
-    g.setFont (15.0f);
+    g.setFont (22.0f);
+
+    int numControls = 3;
+
+    auto box = getLocalBounds().reduced(20);
+    box = box.withTop(box.getBottom() - 40);
+
+    const auto width = box.getWidth() / numControls;
+
+    g.drawFittedText(TRANS("Volume"), box.removeFromLeft(width), juce::Justification::centred, 1);
+    g.drawFittedText(TRANS("Master"), box.removeFromLeft(width), juce::Justification::centred, 1);
+    g.drawFittedText(TRANS("Reverb"), box.removeFromLeft(width), juce::Justification::centred, 1);
 }
 
 void PanOFlexAudioProcessorEditor::resized()
 {
-    auto bounds = getLocalBounds().reduced(10);
-    auto padding = 10;
-    auto numSliders = 3;
-    auto sliderWidth = bounds.getWidth() / numSliders - padding;
-    auto sliderHeight = bounds.getHeight() * 7 / 10;
-    auto sliderStartX = 0;
-    auto sliderStartY = 0;
+    auto box = getLocalBounds().reduced(20);
 
-    volumeSlider.setBounds(sliderStartX, sliderStartY, sliderWidth, sliderHeight);
-    masterSlider.setBounds(volumeSlider.getRight() + padding, sliderStartY, sliderWidth, sliderHeight);
-    reverbSlider.setBounds(masterSlider.getRight() + padding, sliderStartY, sliderWidth, sliderHeight);
-    brightButton.setBounds(sliderStartX + (sliderWidth / 2) - padding, sliderStartY + sliderHeight + padding, 25, 25);
+    box.removeFromBottom(40);
+
+    const auto width = box.getWidth() / 3;
+
+    int padding = 10;
+
+    volumeSlider.setBounds(box.removeFromLeft (width).reduced (padding));
+    brightButton.setBounds(volumeSlider.getLocalBounds().reduced(padding));
+    masterSlider.setBounds(box.removeFromLeft(width).reduced(padding));
+    reverbSlider.setBounds(box.removeFromLeft(width).reduced(padding));
 }
 
 void PanOFlexAudioProcessorEditor::setSliderParams(juce::Slider& slider)
