@@ -134,15 +134,19 @@ void PanOFlexAudioProcessor::parameterChanged(const juce::String& parameterID, f
 {
     if (parameterID == paramVolume) {
         mVolume = newValue;
+        volumeControl.updateGain(mVolume);
     }
     else if (parameterID == paramBright) {
         mBright = newValue;
+        volumeControl.updateSwitch(mBright);
     }
     else if (parameterID == paramMaster) {
         mMaster = newValue;
     }
     else if (parameterID == paramReverb) {
         mReverb = newValue;
+        reverbParams.wetLevel = mReverb;
+        reverb.setParameters(reverbParams);
     }
 }
 
@@ -174,16 +178,6 @@ bool PanOFlexAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts)
 
 void PanOFlexAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
-    auto& volume = *apvts.getRawParameterValue("VOLUME");
-    auto& brightSwitch = *apvts.getRawParameterValue("BRIGHTSWITCH");
-    auto& master = *apvts.getRawParameterValue("MASTER");
-    auto& reverbAmt = *apvts.getRawParameterValue("REVERB");
-
-    reverbParams.wetLevel = reverbAmt;
-    reverb.setParameters(reverbParams);
-    volumeControl.updateGain(volume);
-    volumeControl.updateSwitch(brightSwitch);
-
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
@@ -220,14 +214,12 @@ void PanOFlexAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce
         rcfilter2.processBlock(channelData, numSamples, channel);
     }
     
-    buffer.applyGain(master);
+    buffer.applyGain(mMaster);
 
     //gain control compensation. at 1/5 its very slight and at 1/4 it sounds even
-    buffer.applyGain(powf(volume, -1.0f / 5.0f));
+    buffer.applyGain(powf(mVolume, -1.0f / 5.0f));
 
-    auto* leftData = buffer.getWritePointer(0);
-    auto* rightData = buffer.getWritePointer(1);
-    reverb.processStereo(leftData, rightData, numSamples);
+    reverb.processStereo(buffer.getWritePointer(0), buffer.getWritePointer(1), numSamples);
 }
 
 juce::AudioProcessorValueTreeState& PanOFlexAudioProcessor::getValueTreeState()
