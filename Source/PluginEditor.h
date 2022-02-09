@@ -10,7 +10,6 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-#include "GUI/Controls.h"
 
 //==============================================================================
 /**
@@ -26,10 +25,22 @@ public:
     void resized() override;
 
 private:
+    void setSliderParams(juce::Slider& slider);
+
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     PanOFlexAudioProcessor& audioProcessor;
-    ControlsComponent controls;
+
+    juce::Slider volumeSlider;
+    juce::Slider masterSlider;
+    juce::Slider reverbSlider;
+
+    juce::ToggleButton brightButton;
+
+    juce::AudioProcessorValueTreeState::SliderAttachment volumeAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramVolume, volumeSlider };
+    juce::AudioProcessorValueTreeState::SliderAttachment masterAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramMaster, masterSlider };
+    juce::AudioProcessorValueTreeState::SliderAttachment reverbAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramReverb, reverbSlider };
+    juce::AudioProcessorValueTreeState::ButtonAttachment brightAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramBright, brightButton };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PanOFlexAudioProcessorEditor)
 };
