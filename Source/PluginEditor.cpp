@@ -39,7 +39,7 @@ void PanOFlexAudioProcessorEditor::paint (juce::Graphics& g)
 
     int numControls = 3;
 
-    auto box = getLocalBounds().reduced(20);
+    auto box = getLocalBounds().reduced(10);
     box = box.withTop(box.getBottom() - 40);
 
     const auto width = box.getWidth() / numControls;
@@ -51,7 +51,7 @@ void PanOFlexAudioProcessorEditor::paint (juce::Graphics& g)
 
 void PanOFlexAudioProcessorEditor::resized()
 {
-    auto box = getLocalBounds().reduced(20);
+    auto box = getLocalBounds().reduced(10);
 
     box.removeFromBottom(40);
 
@@ -68,6 +68,6 @@ void PanOFlexAudioProcessorEditor::resized()
 void PanOFlexAudioProcessorEditor::setSliderParams(juce::Slider& slider)
 {
     slider.setSliderStyle(juce::Slider::SliderStyle::Rotary);
-    slider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 50, 25);
+    slider.setTextBoxStyle(juce::Slider::NoTextBox, true, 50, 25);
     addAndMakeVisible(slider);
 }

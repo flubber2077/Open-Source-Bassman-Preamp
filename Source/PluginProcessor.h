@@ -74,13 +74,17 @@ private:
 
     Filter miller1;
     Filter miller2;
+    Filter miller3;
     OnePoleHighPass rcfilter1;
     OnePoleHighPass rcfilter2;
+    OnePoleHighPass rcfilter3;
     Saturation tube1;
     Saturation tube2;
+    Saturation tube3;
     BrightVolume volumeControl;
     juce::Reverb reverb;
     juce::Reverb::Parameters reverbParams;
+    juce::dsp::Oversampling<float> oversampling;
 
     float mVolume = 0.1f;
     bool mBright;

@@ -98,12 +98,16 @@ const juce::String PanOFlexAudioProcessor::getProgramName (int index)
 
 void PanOFlexAudioProcessor::changeProgramName (int index, const juce::String& newName)
 {
+
 }
 
 //==============================================================================
 void PanOFlexAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     int numChannels = getNumInputChannels();
+
+    oversampling.clearOversamplingStages();
+    oversampling.addOversamplingStage(juce::dsp::Oversampling<float>::FilterType::filterHalfBandFIREquiripple, 0.2f, -40.0f, 0.2f, -40.0f);
     miller1.prepareToPlay(numChannels, sampleRate);
     tube1.prepareToPlay(numChannels);
     rcfilter1.prepareToPlay(numChannels, sampleRate);
@@ -111,17 +115,22 @@ void PanOFlexAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     miller2.prepareToPlay(numChannels, sampleRate);
     tube2.prepareToPlay(numChannels);
     rcfilter2.prepareToPlay(numChannels, sampleRate);
+    miller3.prepareToPlay(numChannels, sampleRate);
+    tube3.prepareToPlay(numChannels);
+    rcfilter3.prepareToPlay(numChannels, sampleRate);
     reverb.setSampleRate(sampleRate);
     reverbParams.dryLevel = 1.0f;
     reverbParams.roomSize = 0.3f;
 
     //placeholder cutoff values but ballpark accurate/workable
     miller1.updateCutoff(22000.0f);
-    rcfilter1.updateCutoff(20.0f);
+    rcfilter1.updateCutoff(18.0f);
     volumeControl.updateCutoff(4000.0f);
     volumeControl.updateGain(0.5f);
     miller2.updateCutoff(22000.0f);
-    rcfilter2.updateCutoff(20.0f);
+    rcfilter2.updateCutoff(35.0f);
+    miller3.updateCutoff(22000.0f);
+    rcfilter3.updateCutoff(33.0f);
 }
 
 void PanOFlexAudioProcessor::releaseResources()
@@ -193,8 +202,9 @@ void PanOFlexAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce
 
     int numSamples = buffer.getNumSamples();
 
-    //this gain amount should be varied from simulation to better accept a more standard signal level. maybe a pad input at the beginning?jl
-    buffer.applyGain(2.0f);
+    //this gain amount should be varied from simulation to better accept a more standard signal level. maybe a pad input at the beginning?
+    // Input tube only clips at 6 Vp-p, it does not clip unless someone is doing somethign wrong.
+    //buffer.applyGain(2.0f);
 
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
@@ -206,12 +216,15 @@ void PanOFlexAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce
         volumeControl.processBlock(channelData, numSamples, channel);
         miller2.processBlock(channelData, numSamples, channel);
     }
-    buffer.applyGain(40.0f);
+    buffer.applyGain(35.0f);
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         auto* channelData = buffer.getWritePointer(channel);
         tube2.processBlock(channelData, numSamples, channel);
         rcfilter2.processBlock(channelData, numSamples, channel);
+        miller3.processBlock(channelData, numSamples, channel);
+        tube3.processBlock(channelData, numSamples, channel);
+        rcfilter3.processBlock(channelData, numSamples, channel);
     }
     
     buffer.applyGain(mMaster);
