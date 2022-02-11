@@ -31,9 +31,14 @@ private:
     // access the processor object that created it.
     PanOFlexAudioProcessor& audioProcessor;
 
+    int numControls = 5;
+
     juce::Slider volumeSlider;
+    juce::Slider bassSlider;
+    juce::Slider trebleSlider;
     juce::Slider masterSlider;
     juce::Slider reverbSlider;
+
 
     juce::ToggleButton brightButton;
 
