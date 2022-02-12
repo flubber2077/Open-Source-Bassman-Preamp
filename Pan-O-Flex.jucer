@@ -11,6 +11,9 @@
       <FILE id="s6I6Q7" name="DCBlock.h" compile="0" resource="0" file="Source/DSP/DCBlock.h"/>
       <FILE id="HJBHhP" name="Filter.cpp" compile="1" resource="0" file="Source/DSP/Filter.cpp"/>
       <FILE id="dNMV6U" name="Filter.h" compile="0" resource="0" file="Source/DSP/Filter.h"/>
+      <FILE id="XYhmGG" name="FMVTonestack.cpp" compile="1" resource="0"
+            file="Source/DSP/FMVTonestack.cpp"/>
+      <FILE id="DxPmsy" name="FMVTonestack.h" compile="0" resource="0" file="Source/DSP/FMVTonestack.h"/>
       <FILE id="LEvoCH" name="Saturation.cpp" compile="1" resource="0" file="Source/DSP/Saturation.cpp"/>
       <FILE id="xviYnc" name="Saturation.h" compile="0" resource="0" file="Source/DSP/Saturation.h"/>
     </GROUP>
