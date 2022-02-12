@@ -12,10 +12,16 @@
 #include <algorithm>
 
 
-void FMVTonestack::updateControls(float t, float b)
+void FMVTonestack::updateTreble(float t)
 {
     treble = t;
+    calcCoeffecients();
+}
+
+void FMVTonestack::updateBass(float b)
+{
     bass = b;
+    calcCoeffecients();
 }
 
 void FMVTonestack::calcCoeffecients()
@@ -69,7 +75,7 @@ void FMVTonestack::processSample(float& sample, int channel)
     int channelOffset = channel * 4;
     float currentSample = sample;
 
-    sample = (1.0f / A0) * (B0 * sample + B1 * previousInput[0 + channelOffset] + B2 * previousInput[1 + channelOffset] + B3 * previousInput[0 + channelOffset]
+    sample = (1.0f / A0) * (B0 * sample + B1 * previousInput[0 + channelOffset] + B2 * previousInput[1 + channelOffset] + B3 * previousInput[2 + channelOffset]
         - A1 * previousOutput[0 + channelOffset] - A2 * previousOutput[1 + channelOffset] - A3 * previousOutput[2 + channelOffset]);
 
 //advance the previous sample states. Definitely a cleaner way to do all of this, but this is such a specific use case the lack of modularity is alright. I believe this should vectorize anyway but I dont actually know.

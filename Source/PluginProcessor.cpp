@@ -11,6 +11,8 @@
 
 juce::String PanOFlexAudioProcessor::paramVolume("Volume");
 juce::String PanOFlexAudioProcessor::paramBright("Bright");
+juce::String PanOFlexAudioProcessor::paramBass("Bass");
+juce::String PanOFlexAudioProcessor::paramTreble("Treble");
 juce::String PanOFlexAudioProcessor::paramMaster("Master");
 juce::String PanOFlexAudioProcessor::paramReverb("Reverb");
 
@@ -30,6 +32,8 @@ PanOFlexAudioProcessor::PanOFlexAudioProcessor()
 {
     apvts.addParameterListener(paramVolume, this);
     apvts.addParameterListener(paramBright, this);
+    apvts.addParameterListener(paramBass, this);
+    apvts.addParameterListener(paramTreble, this);
     apvts.addParameterListener(paramMaster, this);
     apvts.addParameterListener(paramReverb, this);
 }
@@ -143,18 +147,30 @@ void PanOFlexAudioProcessor::releaseResources()
 
 void PanOFlexAudioProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
-    if (parameterID == paramVolume) {
+    if (parameterID == paramVolume)
+    {
         mVolume = newValue;
         volumeControl.updateGain(mVolume);
     }
-    else if (parameterID == paramBright) {
+    else if (parameterID == paramBright)
+    {
         mBright = newValue;
         volumeControl.updateSwitch(mBright);
     }
-    else if (parameterID == paramMaster) {
+    else if (parameterID == paramBass)
+    {
+        tonestack.updateBass(newValue);
+    }
+    else if (parameterID == paramTreble)
+    {
+        tonestack.updateTreble(newValue);
+    }
+    else if (parameterID == paramMaster)
+    {
         mMaster = newValue;
     }
-    else if (parameterID == paramReverb) {
+    else if (parameterID == paramReverb)
+    {
         mReverb = newValue;
         reverbParams.wetLevel = mReverb;
         reverb.setParameters(reverbParams);
@@ -281,6 +297,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout PanOFlexAudioProcessor::crea
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramVolume, TRANS ("Volume"), juce::NormalisableRange<float> { 0.001f, 1.0f, 0.000001f, 0.3f }, 0.1f));
     params.push_back(std::make_unique<juce::AudioParameterBool>(paramBright, TRANS ("Bright Switch"), false));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(paramBass, TRANS("Bass"), juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.3f }, 0.1f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(paramTreble, TRANS("Treble"), juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.3f }, 0.1f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramMaster, TRANS ("Master"), juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.3f }, 0.1f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramReverb, TRANS ("Reverb"), juce::NormalisableRange<float> { 0.0f, 0.3f, 0.000001f, 0.6f }, 0.1f));
     return { params.begin(), params.end() };

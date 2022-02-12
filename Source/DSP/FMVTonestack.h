@@ -14,7 +14,8 @@
 class FMVTonestack
 {
 public:
-    void updateControls(float t, float b);
+    void updateTreble(float t);
+    void updateBass(float b);
     void calcCoeffecients();
     void processSample(float &sample, int channel);
     void processBlock(float *samplePointer, int numSamples, int channel);

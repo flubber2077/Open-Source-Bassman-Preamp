@@ -64,6 +64,8 @@ public:
 
     static juce::String paramVolume;
     static juce::String paramBright;
+    static juce::String paramBass;
+    static juce::String paramTreble;
     static juce::String paramMaster;
     static juce::String paramReverb;
 
