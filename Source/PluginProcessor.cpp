@@ -115,6 +115,7 @@ void PanOFlexAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     miller2.prepareToPlay(numChannels, sampleRate);
     tube2.prepareToPlay(numChannels);
     rcfilter2.prepareToPlay(numChannels, sampleRate);
+    tonestack.prepareToPlay(numChannels, sampleRate);
     miller3.prepareToPlay(numChannels, sampleRate);
     tube3.prepareToPlay(numChannels);
     rcfilter3.prepareToPlay(numChannels, sampleRate);
@@ -129,6 +130,7 @@ void PanOFlexAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     volumeControl.updateGain(0.5f);
     miller2.updateCutoff(22000.0f);
     rcfilter2.updateCutoff(35.0f);
+    tonestack.calcCoeffecients();
     miller3.updateCutoff(22000.0f);
     rcfilter3.updateCutoff(33.0f);
 }
@@ -222,6 +224,7 @@ void PanOFlexAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce
         auto* channelData = buffer.getWritePointer(channel);
         tube2.processBlock(channelData, numSamples, channel);
         rcfilter2.processBlock(channelData, numSamples, channel);
+        tonestack.processBlock(channelData, numSamples, channel);
         miller3.processBlock(channelData, numSamples, channel);
         tube3.processBlock(channelData, numSamples, channel);
         rcfilter3.processBlock(channelData, numSamples, channel);

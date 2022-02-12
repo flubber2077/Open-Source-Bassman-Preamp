@@ -13,6 +13,7 @@
 #include "DSP/Saturation.h"
 #include "DSP/DCBlock.h"
 #include "DSP/BrightVolume.h"
+#include "DSP/FMVTonestack.h"
 
 //==============================================================================
 /**
@@ -85,6 +86,7 @@ private:
     juce::Reverb reverb;
     juce::Reverb::Parameters reverbParams;
     juce::dsp::Oversampling<float> oversampling;
+    FMVTonestack tonestack;
 
     float mVolume = 0.1f;
     bool mBright;
