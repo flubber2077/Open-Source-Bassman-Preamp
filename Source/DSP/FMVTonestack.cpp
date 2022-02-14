@@ -18,6 +18,12 @@ void FMVTonestack::updateTreble(float t)
     calcCoeffecients();
 }
 
+void FMVTonestack::updateMid(float m)
+{
+    mid = m;
+    calcCoeffecients();
+}
+
 void FMVTonestack::updateBass(float b)
 {
     bass = b;

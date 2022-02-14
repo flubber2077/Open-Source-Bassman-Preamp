@@ -15,6 +15,7 @@ class FMVTonestack
 {
 public:
     void updateTreble(float t);
+    void updateMid(float m);
     void updateBass(float b);
     void calcCoeffecients();
     void processSample(float &sample, int channel);
@@ -35,9 +36,9 @@ private:
     const float r4 = 56000.0f;       //56k
 
     //variable controls, to be varied from 0-1
-    float treble = 1.0f;
-    float bass = 1.0f;
-    const float mid = 0.3f;
+    float treble = 0.5f;
+    float bass = 0.1f;
+    float mid = 0.3f;
 
     //the digital filter coefficients
     float B0;
