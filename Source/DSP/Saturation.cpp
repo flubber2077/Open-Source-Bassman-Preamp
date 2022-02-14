@@ -22,9 +22,9 @@ void Saturation::processSample(float& sample, int channel)
 
     //if statement avoids divide by zero if the last sample is too close to the current
     //the lesser than amount was chosen arbitrarily but works well so far.
-    if (sampleDifference < 0.0001f)
+    if (fabsf(sampleDifference) < 0.0005f)
     {
-        output = clip((sample + lastSample[channel]) / 2.0f);
+        output = clip(0.5f * (sample + lastSample[channel]));
     }
     else {
         output = (currentAntiderivative - lastAntiderivative[channel]) / (sampleDifference);

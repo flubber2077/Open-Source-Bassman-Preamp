@@ -20,14 +20,14 @@ juce::String PanOFlexAudioProcessor::paramReverb("Reverb");
 //==============================================================================
 PanOFlexAudioProcessor::PanOFlexAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
-                     #if ! JucePlugin_IsMidiEffect
-                      #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
-                      #endif
-                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                     #endif
-     ), apvts(*this, nullptr, "Parameters", createParams())
+    : AudioProcessor(BusesProperties()
+#if ! JucePlugin_IsMidiEffect
+#if ! JucePlugin_IsSynth
+        .withInput("Input", juce::AudioChannelSet::stereo(), true)
+#endif
+        .withOutput("Output", juce::AudioChannelSet::stereo(), true)
+#endif
+    ), apvts(*this, nullptr, "Parameters", createParams())
 #endif
 {
     apvts.addParameterListener(paramVolume, this);
@@ -36,7 +36,7 @@ PanOFlexAudioProcessor::PanOFlexAudioProcessor()
     apvts.addParameterListener(paramTreble, this);
     apvts.addParameterListener(paramMaster, this);
     apvts.addParameterListener(paramReverb, this);
-}
+};
 
 PanOFlexAudioProcessor::~PanOFlexAudioProcessor()
 {
@@ -110,26 +110,29 @@ void PanOFlexAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
 {
     int numChannels = getNumInputChannels();
 
-    oversampling.clearOversamplingStages();
-    oversampling.addOversamplingStage(juce::dsp::Oversampling<float>::FilterType::filterHalfBandFIREquiripple, 0.2f, -40.0f, 0.2f, -40.0f);
-    miller1.prepareToPlay(numChannels, sampleRate);
+    oversampling.numChannels = getTotalNumInputChannels();
+    oversampling.initProcessing(samplesPerBlock);
+    oversampling.reset();
+    float oversampledRate = sampleRate * 2.0;
+
+    setLatencySamples(oversampling.getLatencyInSamples());
+
+    miller1.prepareToPlay(numChannels, oversampledRate);
     tube1.prepareToPlay(numChannels);
-    rcfilter1.prepareToPlay(numChannels, sampleRate);
-    volumeControl.prepareToPlay(numChannels, sampleRate);
-    miller2.prepareToPlay(numChannels, sampleRate);
+    rcfilter1.prepareToPlay(numChannels, oversampledRate);
+    volumeControl.prepareToPlay(numChannels, oversampledRate);
+    miller2.prepareToPlay(numChannels, oversampledRate);
     tube2.prepareToPlay(numChannels);
-    rcfilter2.prepareToPlay(numChannels, sampleRate);
-    tonestack.prepareToPlay(numChannels, sampleRate);
-    miller3.prepareToPlay(numChannels, sampleRate);
+    rcfilter2.prepareToPlay(numChannels, oversampledRate);
+    tonestack.prepareToPlay(numChannels, oversampledRate);
+    miller3.prepareToPlay(numChannels, oversampledRate);
     tube3.prepareToPlay(numChannels);
-    rcfilter3.prepareToPlay(numChannels, sampleRate);
+    rcfilter3.prepareToPlay(numChannels, oversampledRate);
     reverb.setSampleRate(sampleRate);
-    reverbParams.dryLevel = 1.0f;
-    reverbParams.roomSize = 0.3f;
 
     //placeholder cutoff values but ballpark accurate/workable
     miller1.updateCutoff(22000.0f);
-    rcfilter1.updateCutoff(18.0f);
+    rcfilter1.updateCutoff(30.0f);
     volumeControl.updateCutoff(4000.0f);
     volumeControl.updateGain(0.5f);
     miller2.updateCutoff(22000.0f);
@@ -137,6 +140,9 @@ void PanOFlexAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     tonestack.calcCoeffecients();
     miller3.updateCutoff(22000.0f);
     rcfilter3.updateCutoff(33.0f);
+    reverbParams.dryLevel = 1.0f;
+    reverbParams.roomSize = 0.3f;
+    reverb.setParameters(reverbParams);
 }
 
 void PanOFlexAudioProcessor::releaseResources()
@@ -218,15 +224,17 @@ void PanOFlexAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
 
-    int numSamples = buffer.getNumSamples();
-
     //this gain amount should be varied from simulation to better accept a more standard signal level. maybe a pad input at the beginning?
     // Input tube only clips at 6 Vp-p, it does not clip unless someone is doing somethign wrong.
     //buffer.applyGain(2.0f);
 
+    juce::dsp::AudioBlock<float> block(buffer);
+    auto oversampledBlock = oversampling.processSamplesUp(block);
+    int numSamples = oversampledBlock.getNumSamples();
+
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
-        auto* channelData = buffer.getWritePointer(channel);
+        auto* channelData = oversampledBlock.getChannelPointer(channel);
 
         miller1.processBlock(channelData, numSamples, channel);
         tube1.processBlock(channelData, numSamples, channel);
@@ -234,24 +242,32 @@ void PanOFlexAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce
         volumeControl.processBlock(channelData, numSamples, channel);
         miller2.processBlock(channelData, numSamples, channel);
     }
-    buffer.applyGain(35.0f);
+    
+    oversampledBlock.multiplyBy(-35.0f);
+    
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
-        auto* channelData = buffer.getWritePointer(channel);
+        auto* channelData = oversampledBlock.getChannelPointer(channel);
         tube2.processBlock(channelData, numSamples, channel);
         rcfilter2.processBlock(channelData, numSamples, channel);
+    }
+    
+    oversampledBlock.multiplyBy(-35.0f);
+    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    {
+        auto* channelData = oversampledBlock.getChannelPointer(channel);
         tonestack.processBlock(channelData, numSamples, channel);
         miller3.processBlock(channelData, numSamples, channel);
         tube3.processBlock(channelData, numSamples, channel);
         rcfilter3.processBlock(channelData, numSamples, channel);
     }
     
-    buffer.applyGain(mMaster);
+    oversampling.processSamplesDown(block);
 
-    //gain control compensation. at 1/5 its very slight and at 1/4 it sounds even
-    buffer.applyGain(powf(mVolume, -1.0f / 5.0f));
+    //down by 10db, then master control, then gain control compensation. at 1/5 its very slight and at 1/4 it sounds even
+    buffer.applyGain(0.5f * mMaster * powf(mVolume, -1.0f / 5.0f));
 
-    reverb.processStereo(buffer.getWritePointer(0), buffer.getWritePointer(1), numSamples);
+    reverb.processStereo(buffer.getWritePointer(0), buffer.getWritePointer(1), buffer.getNumSamples());
 }
 
 juce::AudioProcessorValueTreeState& PanOFlexAudioProcessor::getValueTreeState()
@@ -300,6 +316,6 @@ juce::AudioProcessorValueTreeState::ParameterLayout PanOFlexAudioProcessor::crea
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramBass, TRANS("Bass"), juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.3f }, 0.1f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramTreble, TRANS("Treble"), juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.3f }, 0.1f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramMaster, TRANS ("Master"), juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.3f }, 0.1f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>(paramReverb, TRANS ("Reverb"), juce::NormalisableRange<float> { 0.0f, 0.3f, 0.000001f, 0.6f }, 0.1f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(paramReverb, TRANS ("Reverb"), juce::NormalisableRange<float> { 0.0f, 0.3f, 0.000001f, 0.6f }, 0.0f));
     return { params.begin(), params.end() };
 }
