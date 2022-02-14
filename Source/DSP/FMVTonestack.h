@@ -26,20 +26,20 @@ private:
     float c;
 
     //the literal constants of the components inside the filter. Set up for a fender bassman
-    const float c1 = 0.00000000025f;
-    const float c2 = 0.000000020f;
-    const float c3 = c2;
-    const float r1 = 250000.0f;
-    const float r2 = 1000000.0f;
-    const float r3 = 6800.0f;
-    const float r4 = 56000.0f;
+    const float c1 = 0.00000000025f; //250p
+    const float c2 = 0.000000020f;   //20n
+    const float c3 = c2;             //20n
+    const float r1 = 250000.0f;      //25k
+    const float r2 = 1000000.0f;     //1M
+    const float r3 = 25000.0f;        //25k
+    const float r4 = 56000.0f;       //56k
 
-    //variable controls, to be rotated from 0-1
+    //variable controls, to be varied from 0-1
     float treble = 1.0f;
     float bass = 1.0f;
-    const float mid = 1.0f;
+    const float mid = 0.3f;
 
-    //the final digital filter coefficients
+    //the digital filter coefficients
     float B0;
     float B1;
     float B2;
