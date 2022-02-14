@@ -31,10 +31,11 @@ private:
     // access the processor object that created it.
     PanOFlexAudioProcessor& audioProcessor;
 
-    int numControls = 5;
+    int numControls = 6;
 
     juce::Slider volumeSlider;
     juce::Slider bassSlider;
+    juce::Slider midSlider;
     juce::Slider trebleSlider;
     juce::Slider masterSlider;
     juce::Slider reverbSlider;
@@ -44,6 +45,7 @@ private:
 
     juce::AudioProcessorValueTreeState::SliderAttachment volumeAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramVolume, volumeSlider };
     juce::AudioProcessorValueTreeState::SliderAttachment bassAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramBass, bassSlider };
+    juce::AudioProcessorValueTreeState::SliderAttachment midAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramMid, midSlider };
     juce::AudioProcessorValueTreeState::SliderAttachment trebleAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramTreble, trebleSlider };
     juce::AudioProcessorValueTreeState::SliderAttachment masterAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramMaster, masterSlider };
     juce::AudioProcessorValueTreeState::SliderAttachment reverbAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramReverb, reverbSlider };
