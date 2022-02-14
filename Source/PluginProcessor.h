@@ -87,13 +87,15 @@ private:
     BrightVolume volumeControl;
     juce::Reverb reverb;
     juce::Reverb::Parameters reverbParams;
-    juce::dsp::Oversampling<float> oversampling;
     FMVTonestack tonestack;
+
+    juce::dsp::Oversampling<float> oversampling{ getTotalNumOutputChannels(), 1, juce::dsp::Oversampling<float>::FilterType::filterHalfBandFIREquiripple, false, true};
 
     float mVolume = 0.1f;
     bool mBright;
     float mMaster = 0.1f;
-    float mReverb = 0.1f;
+    float mReverb = 0.0f;
+
 
 
     //==============================================================================
