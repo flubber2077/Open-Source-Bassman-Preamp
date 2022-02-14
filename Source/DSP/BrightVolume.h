@@ -24,5 +24,5 @@ private:
     bool brightSwitch;
     float mainGain;
     float highGain;
-    const float outputImpedanceRatio = 0.15f; //ratio of output impedance to volume control impedance
+    const float outputImpedanceRatio = 0.05f; //ratio of output impedance to volume control impedance
 };

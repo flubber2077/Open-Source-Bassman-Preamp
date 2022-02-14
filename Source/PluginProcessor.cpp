@@ -133,13 +133,15 @@ void PanOFlexAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     //placeholder cutoff values but ballpark accurate/workable
     miller1.updateCutoff(22000.0f);
     rcfilter1.updateCutoff(30.0f);
-    volumeControl.updateCutoff(4000.0f);
-    volumeControl.updateGain(0.5f);
+    volumeControl.updateCutoff(10000.0f);
     miller2.updateCutoff(22000.0f);
     rcfilter2.updateCutoff(35.0f);
     tonestack.calcCoeffecients();
     miller3.updateCutoff(22000.0f);
     rcfilter3.updateCutoff(33.0f);
+
+    //make sure values are default
+    volumeControl.updateGain(0.1f);
     reverbParams.dryLevel = 1.0f;
     reverbParams.roomSize = 0.3f;
     reverb.setParameters(reverbParams);
@@ -314,7 +316,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout PanOFlexAudioProcessor::crea
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramVolume, TRANS ("Volume"), juce::NormalisableRange<float> { 0.001f, 1.0f, 0.000001f, 0.3f }, 0.1f));
     params.push_back(std::make_unique<juce::AudioParameterBool>(paramBright, TRANS ("Bright Switch"), false));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramBass, TRANS("Bass"), juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.3f }, 0.1f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>(paramTreble, TRANS("Treble"), juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.3f }, 0.1f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(paramTreble, TRANS("Treble"), juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.7f }, 0.1f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramMaster, TRANS ("Master"), juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.3f }, 0.1f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramReverb, TRANS ("Reverb"), juce::NormalisableRange<float> { 0.0f, 0.3f, 0.000001f, 0.6f }, 0.0f));
     return { params.begin(), params.end() };

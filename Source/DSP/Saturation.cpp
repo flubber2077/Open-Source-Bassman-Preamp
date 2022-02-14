@@ -16,6 +16,7 @@ void Saturation::prepareToPlay(int numChannels)
 
 void Saturation::processSample(float& sample, int channel)
 {
+    sample -= 0.1f;
     float sampleDifference = sample - lastSample[channel];
     float currentAntiderivative = antiderivativeClip(sample);
     float output = 0.0f;
