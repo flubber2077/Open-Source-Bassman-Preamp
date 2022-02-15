@@ -15,7 +15,7 @@ PanOFlexAudioProcessorEditor::PanOFlexAudioProcessorEditor (PanOFlexAudioProcess
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (900, 220);
+    setSize (700, 220);
 
     setSliderParams(volumeSlider);
     setSliderParams(bassSlider);
@@ -101,5 +101,6 @@ void PanOFlexAudioProcessorEditor::setSliderParams(juce::Slider& slider)
     slider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::black);
     slider.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colour(255, 255, 107));
     slider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 50, 25);
+    slider.setTextBoxIsEditable(true);
     addAndMakeVisible(slider);
 }
