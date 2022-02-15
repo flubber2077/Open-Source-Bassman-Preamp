@@ -15,7 +15,7 @@ PanOFlexAudioProcessorEditor::PanOFlexAudioProcessorEditor (PanOFlexAudioProcess
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (550, 200);
+    setSize (700, 220);
 
     setSliderParams(volumeSlider);
     setSliderParams(bassSlider);
@@ -35,22 +35,35 @@ PanOFlexAudioProcessorEditor::~PanOFlexAudioProcessorEditor()
 void PanOFlexAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
-    g.setColour (juce::Colours::white);
-    g.setFont (22.0f);
+    auto primaryColor = juce::Colour(253, 216, 53);
+    auto pDarkColor = juce::Colour(197, 166, 0);
+    auto secondaryColor = juce::Colour(109, 76, 65);
+
+    g.fillAll (primaryColor);
 
     auto area = getLocalBounds();
-    area = area.withTop(area.getBottom() - 40);
+    auto banner = area.removeFromTop(18);
+
+    g.setColour(pDarkColor);
+    g.fillRect(banner);
+
+    g.setColour (juce::Colours::black);
+    g.setFont (22.0f);
+
+    g.drawFittedText(TRANS("BASSMAN 5F6-A"), banner.removeFromLeft(200), juce::Justification::centred, 1);
+
+
+    auto textArea = area.removeFromBottom(40);
 
     const auto width = area.getWidth() / numControls;
 
-    g.drawFittedText(TRANS("Volume"), area.removeFromLeft(width), juce::Justification::centred, 1);
-    g.drawFittedText(TRANS("Bass"), area.removeFromLeft(width), juce::Justification::centred, 1);
-    g.drawFittedText(TRANS("Middle"), area.removeFromLeft(width), juce::Justification::centred, 1);
-    g.drawFittedText(TRANS("Treble"), area.removeFromLeft(width), juce::Justification::centred, 1);
-    g.drawFittedText(TRANS("Master"), area.removeFromLeft(width), juce::Justification::centred, 1);
-    g.drawFittedText(TRANS("Reverb"), area.removeFromLeft(width), juce::Justification::centred, 1);
+    g.drawFittedText(TRANS("Volume"), textArea.removeFromLeft(width), juce::Justification::centred, 1);
+    g.drawFittedText(TRANS("Bass"), textArea.removeFromLeft(width), juce::Justification::centred, 1);
+    g.drawFittedText(TRANS("Middle"), textArea.removeFromLeft(width), juce::Justification::centred, 1);
+    g.drawFittedText(TRANS("Treble"), textArea.removeFromLeft(width), juce::Justification::centred, 1);
+    g.drawFittedText(TRANS("Master"), textArea.removeFromLeft(width), juce::Justification::centred, 1);
+    g.drawFittedText(TRANS("Reverb"), textArea.removeFromLeft(width), juce::Justification::centred, 1);
 }
 
 void PanOFlexAudioProcessorEditor::resized()
@@ -58,7 +71,7 @@ void PanOFlexAudioProcessorEditor::resized()
     auto area = getLocalBounds();
     area.removeFromBottom(40);
 
-    auto bannerArea = area.removeFromTop(30);
+    auto bannerArea = area.removeFromTop(18);
     auto buttonArea = area.removeFromTop(30);
 
     auto knobArea = area;
@@ -82,7 +95,12 @@ void PanOFlexAudioProcessorEditor::resized()
 
 void PanOFlexAudioProcessorEditor::setSliderParams(juce::Slider& slider)
 {
+    auto secondaryColor = juce::Colour(109, 76, 65);
     slider.setSliderStyle(juce::Slider::SliderStyle::Rotary);
-    slider.setTextBoxStyle(juce::Slider::NoTextBox, true, 50, 25);
+    slider.setColour(juce::Slider::thumbColourId, secondaryColor);
+    slider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::black);
+    slider.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colour(255, 255, 107));
+    slider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 50, 25);
+    slider.setTextBoxIsEditable(true);
     addAndMakeVisible(slider);
 }
