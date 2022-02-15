@@ -173,10 +173,12 @@ void PanOFlexAudioProcessor::parameterChanged(const juce::String& parameterID, f
     }
     else if (parameterID == paramMid)
     {
+        newValue *= 0.1f;
         tonestack.updateMid(newValue);
     }
     else if (parameterID == paramTreble)
     {
+        newValue *= 0.1f;
         tonestack.updateTreble(newValue);
     }
     else if (parameterID == paramMaster)
@@ -257,7 +259,7 @@ void PanOFlexAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce
     {
         auto* channelData = oversampledBlock.getChannelPointer(channel);
         tube2.processBlock(channelData, numSamples, channel);
-        rcfilter2.processBlock(channelData, numSamples, channel);
+        rcfilter2.processBlock(channelData, numSamples, channel); //technically unnecessary because of tonestack filtering of DC
     }
     
     oversampledBlock.multiplyBy(-35.0f);
@@ -323,8 +325,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout PanOFlexAudioProcessor::crea
     params.push_back(std::make_unique<juce::AudioParameterBool>(paramBright, TRANS ("Bright Switch"), false));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramBass, TRANS("Bass"), juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.3f }, 0.1f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramBass, TRANS("Bass"), juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.3f }, 0.1f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>(paramMid, TRANS("Middle"), juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.3f }, 0.1f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>(paramTreble, TRANS("Treble"), juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.7f }, 0.1f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(paramMid, TRANS("Middle"), juce::NormalisableRange<float> { 0.0f, 10.0f, 0.1f, 1.0f }, 5.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(paramTreble, TRANS("Treble"), juce::NormalisableRange<float> { 0.0f, 10.0f, 0.1f, 1.0f }, 5.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramMaster, TRANS ("Master"), juce::NormalisableRange<float> { 0.0f, 1.0f, 0.000001f, 0.3f }, 0.1f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramReverb, TRANS ("Reverb"), juce::NormalisableRange<float> { 0.0f, 0.3f, 0.000001f, 0.6f }, 0.0f));
     return { params.begin(), params.end() };
