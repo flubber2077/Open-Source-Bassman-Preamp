@@ -21,7 +21,7 @@ PanOFlexAudioProcessorEditor::PanOFlexAudioProcessorEditor (PanOFlexAudioProcess
     setSliderParams(bassSlider);
     setSliderParams(midSlider);
     setSliderParams(trebleSlider);
-    setSliderParams(masterSlider);
+    setSliderParams(outputSlider);
     setSliderParams(reverbSlider);
 
     addAndMakeVisible(brightButton);
@@ -62,7 +62,7 @@ void PanOFlexAudioProcessorEditor::paint (juce::Graphics& g)
     g.drawFittedText(TRANS("Bass"), textArea.removeFromLeft(width), juce::Justification::centred, 1);
     g.drawFittedText(TRANS("Middle"), textArea.removeFromLeft(width), juce::Justification::centred, 1);
     g.drawFittedText(TRANS("Treble"), textArea.removeFromLeft(width), juce::Justification::centred, 1);
-    g.drawFittedText(TRANS("Master"), textArea.removeFromLeft(width), juce::Justification::centred, 1);
+    g.drawFittedText(TRANS("Output"), textArea.removeFromLeft(width), juce::Justification::centred, 1);
     g.drawFittedText(TRANS("Reverb"), textArea.removeFromLeft(width), juce::Justification::centred, 1);
 }
 
@@ -84,7 +84,7 @@ void PanOFlexAudioProcessorEditor::resized()
     bassSlider.setBounds(knobArea.removeFromLeft(knobWidth).reduced(padding));
     midSlider.setBounds(knobArea.removeFromLeft(knobWidth).reduced(padding));
     trebleSlider.setBounds(knobArea.removeFromLeft(knobWidth).reduced(padding));
-    masterSlider.setBounds(knobArea.removeFromLeft(knobWidth).reduced(padding));
+    outputSlider.setBounds(knobArea.removeFromLeft(knobWidth).reduced(padding));
     reverbSlider.setBounds(knobArea.removeFromLeft(knobWidth).reduced(padding));
 
     auto buttonWidth = buttonArea.getWidth() / numControls;

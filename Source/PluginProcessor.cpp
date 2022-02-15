@@ -14,7 +14,7 @@ juce::String PanOFlexAudioProcessor::paramBright("Bright");
 juce::String PanOFlexAudioProcessor::paramBass("Bass");
 juce::String PanOFlexAudioProcessor::paramMid("Middle");
 juce::String PanOFlexAudioProcessor::paramTreble("Treble");
-juce::String PanOFlexAudioProcessor::paramMaster("Master");
+juce::String PanOFlexAudioProcessor::paramOutput("Output");
 juce::String PanOFlexAudioProcessor::paramReverb("Reverb");
 
 
@@ -36,7 +36,7 @@ PanOFlexAudioProcessor::PanOFlexAudioProcessor()
     apvts.addParameterListener(paramBass, this);
     apvts.addParameterListener(paramMid, this);
     apvts.addParameterListener(paramTreble, this);
-    apvts.addParameterListener(paramMaster, this);
+    apvts.addParameterListener(paramOutput, this);
     apvts.addParameterListener(paramReverb, this);
 };
 
@@ -185,9 +185,9 @@ void PanOFlexAudioProcessor::parameterChanged(const juce::String& parameterID, f
         newValue *= 0.1f;
         tonestack.updateTreble(newValue);
     }
-    else if (parameterID == paramMaster)
+    else if (parameterID == paramOutput)
     {
-        mMaster = powf(10, newValue / 20.0f);
+        mOutput = powf(10, newValue / 20.0f);
     }
     else if (parameterID == paramReverb)
     {
@@ -281,7 +281,7 @@ void PanOFlexAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce
     oversampling.processSamplesDown(block);
 
     //down by 10db, then master control, then gain control compensation. at 1/5 its very slight and at 1/4 it sounds even
-    buffer.applyGain(0.2f * mMaster * powf(mVolume, -1.0f / 5.0f));
+    buffer.applyGain(0.2f * mOutput * powf(mVolume, -1.0f / 5.0f));
 
     reverb.processStereo(buffer.getWritePointer(0), buffer.getWritePointer(1), buffer.getNumSamples());
 }
@@ -332,7 +332,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout PanOFlexAudioProcessor::crea
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramBass, TRANS("Bass"), juce::NormalisableRange<float> { 0.0f, 10.0f, 0.1f, 1.0f }, 5.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramMid, TRANS("Middle"), juce::NormalisableRange<float> { 0.0f, 10.0f, 0.1f, 1.0f }, 5.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramTreble, TRANS("Treble"), juce::NormalisableRange<float> { 0.0f, 10.0f, 0.1f, 1.0f }, 5.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>(paramMaster, TRANS ("Master"), juce::NormalisableRange<float> { -60.0f, 0.0f, 0.1f, 1.4f }, -10.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(paramOutput, TRANS ("Output"), juce::NormalisableRange<float> { -60.0f, 0.0f, 0.1f, 1.4f }, -10.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(paramReverb, TRANS ("Reverb"), juce::NormalisableRange<float> { 0.0f, 10.0f, 0.1f, 1.0f }, 0.0f));
     return { params.begin(), params.end() };
 }

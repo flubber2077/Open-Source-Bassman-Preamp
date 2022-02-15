@@ -37,7 +37,7 @@ private:
     juce::Slider bassSlider;
     juce::Slider midSlider;
     juce::Slider trebleSlider;
-    juce::Slider masterSlider;
+    juce::Slider outputSlider;
     juce::Slider reverbSlider;
 
 
@@ -47,7 +47,7 @@ private:
     juce::AudioProcessorValueTreeState::SliderAttachment bassAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramBass, bassSlider };
     juce::AudioProcessorValueTreeState::SliderAttachment midAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramMid, midSlider };
     juce::AudioProcessorValueTreeState::SliderAttachment trebleAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramTreble, trebleSlider };
-    juce::AudioProcessorValueTreeState::SliderAttachment masterAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramMaster, masterSlider };
+    juce::AudioProcessorValueTreeState::SliderAttachment outputAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramOutput, outputSlider };
     juce::AudioProcessorValueTreeState::SliderAttachment reverbAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramReverb, reverbSlider };
     juce::AudioProcessorValueTreeState::ButtonAttachment brightAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramBright, brightButton };
 

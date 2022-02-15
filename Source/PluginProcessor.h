@@ -67,7 +67,7 @@ public:
     static juce::String paramBass;
     static juce::String paramMid;
     static juce::String paramTreble;
-    static juce::String paramMaster;
+    static juce::String paramOutput;
     static juce::String paramReverb;
 
     juce::AudioProcessorValueTreeState apvts;
@@ -94,7 +94,7 @@ private:
 
     float mVolume = 0.1f;
     bool mBright;
-    float mMaster = 0.1f;
+    float mOutput = 0.1f;
     float mReverb = 0.0f;
 
 
