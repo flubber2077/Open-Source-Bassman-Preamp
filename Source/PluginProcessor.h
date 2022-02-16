@@ -93,6 +93,7 @@ private:
     juce::dsp::Oversampling<float> oversampling{ getTotalNumOutputChannels(), 1, juce::dsp::Oversampling<float>::FilterType::filterHalfBandFIREquiripple, false, true};
 
     float mVolume = 0.1f;
+    float volumeCompensation = 1.0f;
     bool mBright;
     float mOutput = 0.1f;
     float mReverb = 0.0f;
