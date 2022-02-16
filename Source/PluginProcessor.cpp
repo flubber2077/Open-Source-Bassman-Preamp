@@ -136,10 +136,10 @@ void PanOFlexAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     miller1.updateCutoff(22000.0f);
     rcfilter1.updateCutoff(30.0f);
     volumeControl.updateCutoff(10000.0f);
-    miller2.updateCutoff(22000.0f);
-    rcfilter2.updateCutoff(35.0f);
+    miller2.updateCutoff(12000.0f);
+    rcfilter2.updateCutoff(20.0f);
     tonestack.calcCoeffecients();
-    miller3.updateCutoff(22000.0f);
+    miller3.updateCutoff(24000.0f);
     rcfilter3.updateCutoff(33.0f);
 
     //make sure values are default
@@ -163,6 +163,14 @@ void PanOFlexAudioProcessor::parameterChanged(const juce::String& parameterID, f
         newValue = 0.0100518357f * exp(4.6f * newValue) - 0.009f; //maps from 0 to -60dB
         mVolume = newValue;
         volumeControl.updateGain(mVolume);
+        if (newValue > 0.1f)
+        {
+            volumeCompensation = 1.0f;
+        }
+        else
+        {
+            volumeCompensation = powf(10.0f * newValue, -1.0f / 4.0f);
+        }
     }
     else if (parameterID == paramBright)
     {
@@ -281,7 +289,7 @@ void PanOFlexAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce
     oversampling.processSamplesDown(block);
 
     //down by 10db, then master control, then gain control compensation. at 1/5 its very slight and at 1/4 it sounds even
-    buffer.applyGain(0.2f * mOutput * powf(mVolume, -1.0f / 5.0f));
+    buffer.applyGain(0.2f * mOutput * volumeCompensation);
 
     reverb.processStereo(buffer.getWritePointer(0), buffer.getWritePointer(1), buffer.getNumSamples());
 }
