@@ -24,9 +24,10 @@ PanOFlexAudioProcessorEditor::PanOFlexAudioProcessorEditor (PanOFlexAudioProcess
     setSliderParams(outputSlider);
     setSliderParams(reverbSlider);
 
-    addAndMakeVisible(brightButton);
-    brightButton.setColour(juce::ToggleButton::ColourIds::tickColourId, juce::Colours::black);
-    brightButton.setColour(juce::ToggleButton::ColourIds::tickDisabledColourId, juce::Colours::black);
+    brightButton.setButtonText("BRIGHT");
+    setButtonParams(brightButton);
+
+    outputSlider.setTextValueSuffix("dB");
 }
 
 PanOFlexAudioProcessorEditor::~PanOFlexAudioProcessorEditor()
@@ -43,12 +44,12 @@ void PanOFlexAudioProcessorEditor::paint (juce::Graphics& g)
     auto secondaryColor = juce::Colour(109, 76, 65);
     auto darkGrey = juce::Colour(100, 100, 100);
     auto grey = juce::Colour(200, 200, 200);
-    auto lightGrey = juce::Colour(235, 235, 235);
+    auto lightGrey = juce::Colour(235, 235, 245);
     auto black = juce::Colours::black;
     g.fillAll (primaryColor);
 
     auto area = getLocalBounds();
-    auto banner = area.removeFromTop(30);
+    auto banner = area.removeFromTop(35);
 
     g.setColour(pDarkColor);
     g.fillRect(banner);
@@ -58,7 +59,7 @@ void PanOFlexAudioProcessorEditor::paint (juce::Graphics& g)
     g.fillRect(buttonArea);
 
     g.setColour (black);
-    juce::Font mainComponentFont ("Haettenschweiler", 26.0f, juce::Font::plain);
+    juce::Font mainComponentFont ("Helvetica", 26.0f, juce::Font::bold);
     g.setFont(mainComponentFont);
 
     g.drawFittedText(TRANS("BASSMAN 5F6-A"), banner.removeFromLeft(200), juce::Justification::left, false);
@@ -78,12 +79,12 @@ void PanOFlexAudioProcessorEditor::paint (juce::Graphics& g)
 
     const auto width = area.getWidth() / numControls;
 
-    g.drawFittedText(TRANS("VOLUME"), textArea.removeFromLeft(width), juce::Justification::centred, false);
-    g.drawFittedText(TRANS("BASS"), textArea.removeFromLeft(width), juce::Justification::centred, false);
-    g.drawFittedText(TRANS("MIDDLE"), textArea.removeFromLeft(width), juce::Justification::centred, false);
-    g.drawFittedText(TRANS("TREBLE"), textArea.removeFromLeft(width), juce::Justification::centred, false);
-    g.drawFittedText(TRANS("OUTPUT"), textArea.removeFromLeft(width), juce::Justification::centred, false);
-    g.drawFittedText(TRANS("REVERB"), textArea.removeFromLeft(width), juce::Justification::centred, false);
+    g.drawFittedText(TRANS("Volume"), textArea.removeFromLeft(width), juce::Justification::centred, false);
+    g.drawFittedText(TRANS("Bass"), textArea.removeFromLeft(width), juce::Justification::centred, false);
+    g.drawFittedText(TRANS("Middle"), textArea.removeFromLeft(width), juce::Justification::centred, false);
+    g.drawFittedText(TRANS("Treble"), textArea.removeFromLeft(width), juce::Justification::centred, false);
+    g.drawFittedText(TRANS("Output"), textArea.removeFromLeft(width), juce::Justification::centred, false);
+    g.drawFittedText(TRANS("Reverb"), textArea.removeFromLeft(width), juce::Justification::centred, false);
 }
 
 void PanOFlexAudioProcessorEditor::resized()
@@ -91,10 +92,10 @@ void PanOFlexAudioProcessorEditor::resized()
     auto area = getLocalBounds();
     area.removeFromBottom(40);
 
-    auto bannerArea = area.removeFromTop(30);
+    auto bannerArea = area.removeFromTop(35);
     auto buttonArea = area.removeFromTop(30);
 
-    auto knobArea = area;
+    auto knobArea = area.withTrimmedTop(10);
 
     const auto knobWidth = knobArea.getWidth() / numControls;
 
@@ -110,18 +111,28 @@ void PanOFlexAudioProcessorEditor::resized()
     auto buttonWidth = buttonArea.getWidth() / numControls;
 
     auto brightArea = (buttonArea.removeFromLeft(buttonWidth));
-    brightButton.setBounds(brightArea.reduced(25, 0));
+    brightButton.setBounds(brightArea.reduced(20, 0));
 }
 
 void PanOFlexAudioProcessorEditor::setSliderParams(juce::Slider& slider)
 {
     auto secondaryColor = juce::Colour(109, 76, 65);
     slider.setSliderStyle(juce::Slider::SliderStyle::Rotary);
-    slider.setColour(juce::Slider::thumbColourId, secondaryColor);
+    slider.setColour(juce::Slider::thumbColourId, juce::Colour(31, 150, 200));//secondaryColor);
     slider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::black);
+    slider.setColour(juce::Slider::textBoxHighlightColourId, juce::Colours::darkgrey);
     slider.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colour(245, 245, 250));
-    slider.setColour(juce::Slider::trackColourId, juce::Colour(109, 76, 65));
-    slider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 50, 25);
+    slider.setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(32, 150, 200));
+    slider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 60, 25);
     slider.setTextBoxIsEditable(true);
     addAndMakeVisible(slider);
+}
+
+void PanOFlexAudioProcessorEditor::setButtonParams(juce::Button& button)
+{
+    button.setColour(juce::ToggleButton::ColourIds::tickColourId, juce::Colours::black);
+    button.setColour(juce::ToggleButton::ColourIds::tickDisabledColourId, juce::Colours::black);
+    button.setColour(juce::ToggleButton::ColourIds::textColourId, juce::Colours::black);
+
+    addAndMakeVisible(button);
 }
