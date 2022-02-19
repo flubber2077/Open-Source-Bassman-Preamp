@@ -16,6 +16,8 @@ PanOFlexAudioProcessorEditor::PanOFlexAudioProcessorEditor (PanOFlexAudioProcess
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (700, 250);
+    setResizable(true, true);
+    setResizeLimits(500, 150, 1200, 340);
 
     setSliderParams(volumeSlider);
     setSliderParams(bassSlider);
@@ -59,10 +61,10 @@ void PanOFlexAudioProcessorEditor::paint (juce::Graphics& g)
     g.fillRect(buttonArea);
 
     g.setColour (black);
-    juce::Font mainComponentFont ("Helvetica", 26.0f, juce::Font::bold);
+    juce::Font mainComponentFont ("Bahnschrift", 26.0f, juce::Font::plain);
     g.setFont(mainComponentFont);
 
-    g.drawFittedText(TRANS("BASSMAN 5F6-A"), banner.removeFromLeft(200), juce::Justification::left, false);
+    g.drawFittedText(TRANS("BASSMAN 5F6-A PREAMP"), banner.removeFromLeft(300), juce::Justification::centred, false);
     banner.removeFromRight(5);
     g.drawFittedText(TRANS("by Dylan Jordan"), banner.removeFromRight(200), juce::Justification::right, false);
 
@@ -108,7 +110,7 @@ void PanOFlexAudioProcessorEditor::resized()
     outputSlider.setBounds(knobArea.removeFromLeft(knobWidth).reduced(padding));
     reverbSlider.setBounds(knobArea.removeFromLeft(knobWidth).reduced(padding));
 
-    auto buttonWidth = buttonArea.getWidth() / numControls;
+    auto buttonWidth = buttonArea.getWidth() / 3;
 
     auto brightArea = (buttonArea.removeFromLeft(buttonWidth));
     brightButton.setBounds(brightArea.reduced(20, 0));

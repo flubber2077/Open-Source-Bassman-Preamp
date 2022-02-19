@@ -79,7 +79,7 @@ bool PanOFlexAudioProcessor::isMidiEffect() const
 
 double PanOFlexAudioProcessor::getTailLengthSeconds() const
 {
-    return 0.0;
+    return 0.1f;
 }
 
 int PanOFlexAudioProcessor::getNumPrograms()
@@ -147,6 +147,8 @@ void PanOFlexAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     reverbParams.dryLevel = 1.0f;
     reverbParams.roomSize = 0.3f;
     reverb.setParameters(reverbParams);
+
+    setLatencySamples(oversampling.getLatencyInSamples() +  (3/2)*(sampleRate/oversampledRate));
 }
 
 void PanOFlexAudioProcessor::releaseResources()
