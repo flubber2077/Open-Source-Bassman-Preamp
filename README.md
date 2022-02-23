@@ -1,4 +1,6 @@
 # Pan-O-Flex
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/C0C5AYNGR)
  
 Emulation of the Versatone Pan-O-Flex. Known for use by Carol Kaye during many LA sessions including Pet Sounds, and Jack Cassady of Jefferson Airplane.
 
