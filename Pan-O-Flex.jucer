@@ -16,6 +16,8 @@
       <FILE id="DxPmsy" name="FMVTonestack.h" compile="0" resource="0" file="Source/DSP/FMVTonestack.h"/>
       <FILE id="LEvoCH" name="Saturation.cpp" compile="1" resource="0" file="Source/DSP/Saturation.cpp"/>
       <FILE id="xviYnc" name="Saturation.h" compile="0" resource="0" file="Source/DSP/Saturation.h"/>
+      <FILE id="L7ZMy7" name="SVFFilter.cpp" compile="1" resource="0" file="Source/DSP/SVFFilter.cpp"/>
+      <FILE id="oSrCsL" name="SVFFilter.h" compile="0" resource="0" file="Source/DSP/SVFFilter.h"/>
     </GROUP>
     <GROUP id="{3B0192CA-F909-1BC7-2FE2-6E16C9E8BA39}" name="Source">
       <FILE id="cdv555" name="PluginProcessor.cpp" compile="1" resource="0"
