@@ -90,7 +90,7 @@ private:
     juce::Reverb::Parameters reverbParams;
     FMVTonestack tonestack;
 
-    juce::dsp::Oversampling<float> oversampling{ getTotalNumOutputChannels(), 1, juce::dsp::Oversampling<float>::FilterType::filterHalfBandFIREquiripple, false, true};
+    juce::dsp::Oversampling<float> oversampling{ (size_t) getTotalNumOutputChannels(), 1, juce::dsp::Oversampling<float>::FilterType::filterHalfBandFIREquiripple, false, true};
 
     float mVolume = 0.1f;
     float volumeCompensation = 1.0f;

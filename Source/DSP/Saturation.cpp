@@ -6,7 +6,7 @@
   ==============================================================================
 */
 
-#include "saturation.h"
+#include "Saturation.h"
 
 void Saturation::prepareToPlay(int numChannels)
 {

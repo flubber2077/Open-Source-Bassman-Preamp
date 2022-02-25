@@ -6,7 +6,7 @@
   ==============================================================================
 */
 
-#include "filter.h"
+#include "Filter.h"
 
 void Filter::prepareToPlay(int numChannels, float sampleRate)
 {
