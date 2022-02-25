@@ -27,7 +27,9 @@ PanOFlexAudioProcessorEditor::PanOFlexAudioProcessorEditor (PanOFlexAudioProcess
     setSliderParams(reverbSlider);
 
     brightButton.setButtonText("BRIGHT");
+    cabinetButton.setButtonText("CAB SIM (beta)");
     setButtonParams(brightButton);
+    setButtonParams(cabinetButton);
 
     outputSlider.setTextValueSuffix("dB");
 }
@@ -114,6 +116,7 @@ void PanOFlexAudioProcessorEditor::resized()
 
     auto brightArea = (buttonArea.removeFromLeft(buttonWidth));
     brightButton.setBounds(brightArea.reduced(20, 0));
+    cabinetButton.setBounds(buttonArea.removeFromRight(buttonWidth));
 }
 
 void PanOFlexAudioProcessorEditor::setSliderParams(juce::Slider& slider)

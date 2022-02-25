@@ -14,6 +14,7 @@
 #include "DSP/DCBlock.h"
 #include "DSP/BrightVolume.h"
 #include "DSP/FMVTonestack.h"
+#include "DSP/SVFFilter.h"
 
 //==============================================================================
 /**
@@ -69,6 +70,7 @@ public:
     static juce::String paramTreble;
     static juce::String paramOutput;
     static juce::String paramReverb;
+    static juce::String paramCabinet;
 
     juce::AudioProcessorValueTreeState apvts;
 
@@ -86,6 +88,8 @@ private:
     Saturation tube2;
     Saturation tube3;
     BrightVolume volumeControl;
+    SVFFilter topCut;
+    //SVFFilter bottomCut;
     juce::Reverb reverb;
     juce::Reverb::Parameters reverbParams;
     FMVTonestack tonestack;
@@ -95,6 +99,7 @@ private:
     float mVolume = 0.1f;
     float volumeCompensation = 1.0f;
     bool mBright;
+    bool mCabinet = false;
     float mOutput = 0.1f;
     float mReverb = 0.0f;
 

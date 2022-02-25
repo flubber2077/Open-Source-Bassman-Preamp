@@ -43,6 +43,7 @@ private:
 
 
     juce::ToggleButton brightButton;
+    juce::ToggleButton cabinetButton;
 
     juce::AudioProcessorValueTreeState::SliderAttachment volumeAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramVolume, volumeSlider };
     juce::AudioProcessorValueTreeState::SliderAttachment bassAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramBass, bassSlider };
@@ -51,6 +52,7 @@ private:
     juce::AudioProcessorValueTreeState::SliderAttachment outputAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramOutput, outputSlider };
     juce::AudioProcessorValueTreeState::SliderAttachment reverbAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramReverb, reverbSlider };
     juce::AudioProcessorValueTreeState::ButtonAttachment brightAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramBright, brightButton };
+    juce::AudioProcessorValueTreeState::ButtonAttachment cabinetAttachment{ audioProcessor.getValueTreeState(), PanOFlexAudioProcessor::paramCabinet, cabinetButton };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PanOFlexAudioProcessorEditor)
 };
