@@ -133,7 +133,7 @@ void PanOFlexAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     tube3.prepareToPlay(numChannels);
     rcfilter3.prepareToPlay(numChannels, oversampledRate);
     topCut.prepareToPlay(numChannels, sampleRate);
-   // bottomCut.prepareToPlay(numChannels, sampleRate);
+    bottomCut.prepareToPlay(numChannels, sampleRate);
     reverb.setSampleRate(sampleRate);
 
     //placeholder cutoff values but ballpark accurate/workable
@@ -147,8 +147,8 @@ void PanOFlexAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     rcfilter3.updateCutoff(33.0f);
     topCut.updateCutoff(4000.0f);
     topCut.updateResonance(0.7f);
-    //bottomCut.updateCutoff(85.0f);
-    //bottomCut.updateResonance(0.5f);
+    bottomCut.updateCutoff(85.0f);
+    bottomCut.updateResonance(0.7f);
 
     //make sure values are default
     volumeControl.updateGain(0.1f);
@@ -309,7 +309,7 @@ void PanOFlexAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce
         {
             auto* channelData = buffer.getWritePointer(channel);
             topCut.processBlock(channelData, numSamples, channel);
-            //bottomCut.processBlock(channelData, numSamples, channel);
+            bottomCut.processHighpassBlock(channelData, numSamples, channel);
         }
     }
 

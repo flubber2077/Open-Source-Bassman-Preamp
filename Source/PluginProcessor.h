@@ -89,7 +89,7 @@ private:
     Saturation tube3;
     BrightVolume volumeControl;
     SVFFilter topCut;
-    //SVFFilter bottomCut;
+    SVFFilter bottomCut;
     juce::Reverb reverb;
     juce::Reverb::Parameters reverbParams;
     FMVTonestack tonestack;

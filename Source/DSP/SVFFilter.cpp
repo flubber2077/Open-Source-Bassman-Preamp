@@ -57,6 +57,18 @@ void SVFFilter::processSample(float& sample, int channel)
     state2[channel] = sample + v2;
 }
 
+void SVFFilter::processHighpassSample(float& sample, int channel)
+{
+    float highPass = (sample - (2.0f * damping + cutoffCoeff) * state1[channel] - state2[channel]) * dampingCoeff;
+    float v1 = cutoffCoeff * highPass;
+    float bandPass = v1 + state1[channel];
+    state1[channel] = bandPass + v1;
+    float v2 = cutoffCoeff * bandPass;
+    float lowPass = v2 + state2[channel];
+    state2[channel] = lowPass + v2;
+    sample = highPass;
+}
+
 void SVFFilter::updateSampleRate(float sampleRate)
 {
     SVFFilter::sampleRate = sampleRate;
@@ -93,6 +105,14 @@ void SVFFilter::processBlock(float* bufferPointer, int numSamples, int channel)
     for (int sample = 0; sample < numSamples; ++sample)
     {
         processSample(bufferPointer[sample], channel);
+    }
+}
+
+void SVFFilter::processHighpassBlock(float* bufferPointer, int numSamples, int channel)
+{
+    for (int sample = 0; sample < numSamples; ++sample)
+    {
+        processHighpassSample(bufferPointer[sample], channel);
     }
 }
 
