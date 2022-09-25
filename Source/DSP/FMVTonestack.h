@@ -32,7 +32,7 @@ private:
     const float c3 = c2;             //20n
     const float r1 = 250000.0f;      //25k
     const float r2 = 1000000.0f;     //1M
-    const float r3 = 25000.0f;        //25k
+    const float r3 = 25000.0f;       //25k
     const float r4 = 56000.0f;       //56k
 
     //variable controls, to be varied from 0-1

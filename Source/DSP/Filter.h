@@ -9,6 +9,7 @@
 #pragma once
 
 #include <vector>
+#include <cmath>
 
 //Zavalishin's 1 pole lowpass filter (direct form II trapezoidal filter) from VA Filter Design
 

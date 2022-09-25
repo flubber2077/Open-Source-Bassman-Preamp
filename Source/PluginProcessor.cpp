@@ -112,7 +112,7 @@ void PanOFlexAudioProcessor::changeProgramName (int index, const juce::String& n
 //==============================================================================
 void PanOFlexAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    int numChannels = getNumInputChannels();
+    int numChannels = getTotalNumInputChannels();
 
     oversampling.numChannels = getTotalNumInputChannels();
     oversampling.initProcessing(samplesPerBlock);

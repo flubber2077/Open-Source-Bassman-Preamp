@@ -10,6 +10,7 @@
 
 #pragma once
 #include <vector>
+#include <math.h>
 
 //Zavalishin's SVF Filter from VA Filter Design
 
