@@ -2,7 +2,7 @@
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/C0C5AYNGR)
  
-An open source emulation project of the 5F6-A revision of the Fender Bassman preamp. A fork of the more ambitious project of emulating the Versatone Pan-O-Flex. Built to better understand C++, real-time DSP, JUCE, GUI, and Object Oriented Programming.
+An open source emulation project of the 5F6-A revision of the Fender Bassman preamp. A fork of the more ambitious project of emulating the Versatone Pan-O-Flex. Built to better understand C++, real-time DSP, JUCE, GUI, and Object Oriented Programming. Released under GPLv3
 
 Current Technologies used:
 
